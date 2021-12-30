@@ -28,6 +28,21 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Column(
+      children: [
+        const TextField(
+          decoration: InputDecoration(
+            labelText: 'Paste Youtube link',
+          ),
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+        ElevatedButton(
+          onPressed: () {},
+          child: const Text('Download'),
+        ),
+      ],
+    );
   }
 }
