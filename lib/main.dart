@@ -15,7 +15,12 @@ class MyApp extends StatelessWidget {
         appBar: AppBar(
           title: const Text('Youtube Downloader'),
         ),
-        body: const HomePage(),
+        body: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 1000),
+            child: const HomePage(),
+          ),
+        ),
       ),
     );
   }
