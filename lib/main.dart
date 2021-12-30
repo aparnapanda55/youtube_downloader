@@ -42,6 +42,47 @@ class HomePage extends StatelessWidget {
           onPressed: () {},
           child: const Text('Download'),
         ),
+        Expanded(
+          child: Row(
+            children: [
+              Container(
+                width: 500,
+                child: const Image(
+                  image:
+                      NetworkImage('https://i.ytimg.com/vi/VDqGoiOLld4/0.jpg'),
+                ),
+              ),
+              Column(
+                children: [
+                  Text('Title'),
+                  Text('Channel name'),
+                  Text('duration'),
+                  Row(
+                    children: [
+                      DropdownButton<String>(
+                        items: const [
+                          DropdownMenuItem(
+                            value: 'a',
+                            child: Text('a'),
+                          ),
+                          DropdownMenuItem(
+                            value: 'ab',
+                            child: Text('ab'),
+                          ),
+                          DropdownMenuItem(
+                            value: 'ad',
+                            child: Text('ad'),
+                          ),
+                        ],
+                        onChanged: (value) {},
+                      ),
+                    ],
+                  )
+                ],
+              )
+            ],
+          ),
+        )
       ],
     );
   }
