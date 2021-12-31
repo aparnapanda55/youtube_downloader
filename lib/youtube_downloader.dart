@@ -414,5 +414,5 @@ class Video {
   }
 
   String get thumbnail =>
-      data['videoDetail']['thumbnail']['thumbnails'][0]['url'];
+      data['videoDetails']['thumbnail']['thumbnails'][0]['url'].split('?')[0];
 }
