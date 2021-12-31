@@ -45,23 +45,20 @@ class HomePage extends StatelessWidget {
                   child: TextField(
                     decoration: InputDecoration(
                       labelText: 'Paste YouTube link',
-                      // border: OutlineInputBorder(),
                     ),
                   ),
                 ),
                 IconButton(
                   onPressed: () {},
                   icon: const Icon(Icons.search),
-                )
+                ),
+                const Tooltip(
+                  child: Icon(Icons.info_outline),
+                  message:
+                      'URL Formats\nhttps://www.youtube.com/watch?v=videoId\nhttps://youtu.be/videoId',
+                ),
               ],
             ),
-            const SizedBox(
-              height: 20,
-            ),
-            // OutlinedButton(
-            //   onPressed: () {},
-            //   child: const Text('Search'),
-            // ),
             const SizedBox(
               height: 50,
             ),
