@@ -415,4 +415,15 @@ class Video {
 
   String get thumbnail =>
       data['videoDetails']['thumbnail']['thumbnails'][0]['url'].split('?')[0];
+  List<VideoUrl> get urls {
+    return [
+      ...data['streamingData']['formats'],
+      ...data['streamingData']['adaptiveFormats'],
+    ];
+  }
+}
+
+class VideoUrl {
+  final Map<String, dynamic> data;
+  VideoUrl(this.data);
 }
