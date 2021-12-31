@@ -398,7 +398,9 @@ class Video {
   Video(this.data);
 
   String get title => data['videoDetails']['title'];
+
   String get author => data['videoDetails']['author'];
+
   String get duration {
     final time = int.parse(data['videoDetails']['lengthSeconds']);
     final hour = time ~/ 3600;
@@ -410,4 +412,7 @@ class Video {
 
     return hour == 0 ? '$m:$s' : '$h:$m:$s';
   }
+
+  String get thumbnail =>
+      data['videoDetail']['thumbnail']['thumbnails'][0]['url'];
 }
