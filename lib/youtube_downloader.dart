@@ -419,7 +419,7 @@ class Video {
     return [
       ...data['streamingData']['formats'],
       ...data['streamingData']['adaptiveFormats'],
-    ];
+    ].map((e) => VideoUrl(e)).toList();
   }
 }
 
