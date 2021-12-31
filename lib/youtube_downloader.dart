@@ -1,3 +1,6 @@
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
 Map<String, dynamic> data = {
   "videoDetails": {
     "videoId": "VDqGoiOLld4",
@@ -387,3 +390,24 @@ Map<String, dynamic> data = {
     ]
   }
 };
+
+final formatter = NumberFormat('00');
+
+class Video {
+  final Map<String, dynamic> data;
+  Video(this.data);
+
+  String get title => data['videoDetails']['title'];
+  String get author => data['videoDetails']['author'];
+  String get duration {
+    final time = int.parse(data['videoDetails']['lengthSeconds']);
+    final hour = time ~/ 3600;
+    final minutes = (time % 3600) ~/ 60;
+    final seconds = (time % 3600) % 60;
+    final h = formatter.format(hour);
+    final m = formatter.format(minutes);
+    final s = formatter.format(seconds);
+
+    return hour == 0 ? '$m:$s' : '$h:$m:$s';
+  }
+}
