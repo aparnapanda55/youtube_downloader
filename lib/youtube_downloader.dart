@@ -426,4 +426,6 @@ class Video {
 class VideoUrl {
   final Map<String, dynamic> data;
   VideoUrl(this.data);
+
+  int get size => int.parse(data['contentLength']) ~/ (1024 * 1024);
 }
