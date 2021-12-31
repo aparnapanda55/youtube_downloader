@@ -39,24 +39,29 @@ class HomePage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const TextField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(15),
+            Row(
+              children: [
+                const Expanded(
+                  child: TextField(
+                    decoration: InputDecoration(
+                      labelText: 'Paste YouTube link',
+                      // border: OutlineInputBorder(),
+                    ),
                   ),
-                  borderSide: BorderSide(color: Colors.blue, width: 7.0),
                 ),
-                labelText: 'Paste Youtube link',
-              ),
+                IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Icons.search),
+                )
+              ],
             ),
             const SizedBox(
               height: 20,
             ),
-            OutlinedButton(
-              onPressed: () {},
-              child: const Text('Search'),
-            ),
+            // OutlinedButton(
+            //   onPressed: () {},
+            //   child: const Text('Search'),
+            // ),
             const SizedBox(
               height: 50,
             ),
