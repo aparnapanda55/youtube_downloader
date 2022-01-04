@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
         body: Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 1000),
-            child: const HomePage(),
+            child: HomePage(),
           ),
         ),
       ),
@@ -27,9 +27,11 @@ class MyApp extends StatelessWidget {
 }
 
 class HomePage extends StatelessWidget {
-  const HomePage({
+  HomePage({
     Key? key,
   }) : super(key: key);
+  final formKey = GlobalKey<FormState>();
+  final urlController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -39,25 +41,31 @@ class HomePage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Row(
-              children: [
-                const Expanded(
-                  child: TextField(
-                    decoration: InputDecoration(
-                      labelText: 'Paste YouTube link',
+            Form(
+              key: formKey,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: urlController,
+                      decoration: const InputDecoration(
+                        labelText: 'Paste YouTube link',
+                      ),
+                      onFieldSubmitted: submitForm,
+                      validator: validate,
                     ),
                   ),
-                ),
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.search),
-                ),
-                const Tooltip(
-                  child: Icon(Icons.info_outline),
-                  message:
-                      'URL Formats\nhttps://www.youtube.com/watch?v=videoId\nhttps://youtu.be/videoId',
-                ),
-              ],
+                  IconButton(
+                    onPressed: () => submitForm(urlController.text),
+                    icon: const Icon(Icons.search),
+                  ),
+                  const Tooltip(
+                    child: Icon(Icons.info_outline),
+                    message:
+                        'URL Formats\nhttps://www.youtube.com/watch?v=videoId\nhttps://youtu.be/videoId',
+                  ),
+                ],
+              ),
             ),
             const SizedBox(
               height: 50,
@@ -67,6 +75,16 @@ class HomePage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void submitForm(String url) {
+    final state = formKey.currentState;
+    if (state == null || !state.validate()) return;
+    print('fetching details');
+  }
+
+  String? validate(String? url) {
+    return 'Invalid URL';
   }
 }
 
