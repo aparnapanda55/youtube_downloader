@@ -80,11 +80,19 @@ class HomePage extends StatelessWidget {
   void submitForm(String url) {
     final state = formKey.currentState;
     if (state == null || !state.validate()) return;
-    print('fetching details');
+    final videoId = parseVideoId(url);
+    print('fetching details for $videoId');
+  }
+
+  String parseVideoId(String url) {
+    return (Uri.parse(url).queryParameters['v'] ?? '').trim();
   }
 
   String? validate(String? url) {
-    return 'Invalid URL';
+    if (url == null || parseVideoId(url).isEmpty) {
+      return 'Invalid YouTube video URL';
+    }
+    return null;
   }
 }
 
