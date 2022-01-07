@@ -79,7 +79,19 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(
               height: 50,
             ),
-            if (videoId != null) Text('results pane')
+            if (videoId != null)
+              FutureBuilder<Video>(
+                future: getVideo(videoId!),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState != ConnectionState.done) {
+                    return const CircularProgressIndicator();
+                  } else {
+                    return (snapshot.hasError)
+                        ? Text('$snapshot.error')
+                        : Text('Result pane');
+                  }
+                },
+              )
           ],
         ),
       ),
