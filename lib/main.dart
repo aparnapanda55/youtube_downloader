@@ -88,7 +88,7 @@ class _HomePageState extends State<HomePage> {
                   } else {
                     return (snapshot.hasError)
                         ? Text('$snapshot.error')
-                        : Text('Result pane');
+                        : ResultPane(video: snapshot.data!);
                   }
                 },
               )
@@ -126,7 +126,10 @@ class _HomePageState extends State<HomePage> {
 class ResultPane extends StatelessWidget {
   const ResultPane({
     Key? key,
+    required this.video,
   }) : super(key: key);
+
+  final Video video;
 
   @override
   Widget build(BuildContext context) {
@@ -138,9 +141,9 @@ class ResultPane extends StatelessWidget {
     //   padding: const EdgeInsets.all(20),
     //   child: const AdaptiveResultPane(),
     // );
-    return const Card(
+    return Card(
       elevation: 10,
-      child: AdaptiveResultPane(),
+      child: AdaptiveResultPane(video: video),
     );
   }
 }
@@ -148,7 +151,9 @@ class ResultPane extends StatelessWidget {
 class AdaptiveResultPane extends StatelessWidget {
   const AdaptiveResultPane({
     Key? key,
+    required this.video,
   }) : super(key: key);
+  final Video video;
 
   @override
   Widget build(BuildContext context) {
@@ -156,16 +161,16 @@ class AdaptiveResultPane extends StatelessWidget {
       builder: (context, constraints) {
         return constraints.maxWidth < 700
             ? Column(
-                children: const [
-                  Thumbnail(),
-                  DownloadDetails(),
+                children: [
+                  Thumbnail(thumbnailUrl: video.thumbnailUrl),
+                  DownloadDetails(video: video),
                 ],
               )
             : Row(
                 mainAxisAlignment: MainAxisAlignment.start,
-                children: const [
-                  Thumbnail(),
-                  DownloadDetails(),
+                children: [
+                  Thumbnail(thumbnailUrl: video.thumbnailUrl),
+                  DownloadDetails(video: video),
                 ],
               );
       },
@@ -176,8 +181,9 @@ class AdaptiveResultPane extends StatelessWidget {
 class DownloadDetails extends StatelessWidget {
   const DownloadDetails({
     Key? key,
+    required this.video,
   }) : super(key: key);
-
+  final Video video;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -237,10 +243,9 @@ class DownloadDetails extends StatelessWidget {
 }
 
 class Thumbnail extends StatelessWidget {
-  const Thumbnail({
-    Key? key,
-  }) : super(key: key);
+  const Thumbnail({Key? key, required this.thumbnailUrl}) : super(key: key);
 
+  final String thumbnailUrl;
   @override
   Widget build(BuildContext context) {
     return Container(
