@@ -191,18 +191,18 @@ class DownloadDetails extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Total Chaos | Trashy Thursday',
-            style: TextStyle(fontWeight: FontWeight.w600),
+          Text(
+            video.title,
+            style: const TextStyle(fontWeight: FontWeight.w600),
           ),
           const SizedBox(
             height: 10,
           ),
-          const Text('The Satya Show'),
+          Text(video.author),
           const SizedBox(
             height: 10,
           ),
-          const Text('12.03'),
+          Text(video.duration),
           const SizedBox(
             height: 10,
           ),
@@ -211,21 +211,15 @@ class DownloadDetails extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               DropdownButton<String>(
-                items: const [
-                  DropdownMenuItem(
-                    value: 'asssssss',
-                    child: Text('assssssssssss'),
-                  ),
-                  DropdownMenuItem(
-                    value: 'ab',
-                    child: Text('ab'),
-                  ),
-                  DropdownMenuItem(
-                    value: 'ad',
-                    child: Text('ad'),
-                  ),
+                items: [
+                  for (final downloadUrl in video.downloadUrls)
+                    DropdownMenuItem(
+                      child: Text('${downloadUrl.quality}'),
+                      value: downloadUrl.quality,
+                    ),
                 ],
                 onChanged: (value) {},
+                value: video.downloadUrls[0].quality,
               ),
               const SizedBox(
                 width: 30,
