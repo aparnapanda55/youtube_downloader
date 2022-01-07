@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:youtube_downloader/youtube.dart';
 
 void main() {
   runApp(const MyApp());
@@ -26,12 +27,20 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   HomePage({
     Key? key,
   }) : super(key: key);
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   final formKey = GlobalKey<FormState>();
+
   final urlController = TextEditingController();
+  String? videoId;
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +79,7 @@ class HomePage extends StatelessWidget {
             const SizedBox(
               height: 50,
             ),
-            const ResultPane()
+            if (videoId != null) Text('results pane')
           ],
         ),
       ),
