@@ -87,10 +87,16 @@ class _HomePageState extends State<HomePage> {
   }
 
   void submitForm(String url) {
+    setState(() {
+      videoId = null;
+    });
     final state = formKey.currentState;
     if (state == null || !state.validate()) return;
-    final videoId = parseVideoId(url);
-    print('fetching details for $videoId');
+    final v = parseVideoId(url);
+    print('fetching details for $v');
+    setState(() {
+      videoId = v;
+    });
   }
 
   String parseVideoId(String url) {
