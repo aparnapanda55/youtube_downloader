@@ -245,10 +245,9 @@ class Thumbnail extends StatelessWidget {
     return Container(
       height: 188,
       width: 336,
-      padding: EdgeInsets.all(20),
-      child: Placeholder(
-        fallbackHeight: 100,
-        fallbackWidth: 200,
+      padding: const EdgeInsets.all(20),
+      child: Image(
+        image: NetworkImage(thumbnailUrl),
       ),
     );
   }
