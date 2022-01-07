@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
         body: Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 1000),
-            child: HomePage(),
+            child: const HomePage(),
           ),
         ),
       ),
@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
 }
 
 class HomePage extends StatefulWidget {
-  HomePage({
+  const HomePage({
     Key? key,
   }) : super(key: key);
 
@@ -210,17 +210,17 @@ class DownloadDetails extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              DropdownButton<String>(
-                items: [
-                  for (final downloadUrl in video.downloadUrls)
-                    DropdownMenuItem(
-                      child: Text('${downloadUrl.quality}'),
-                      value: downloadUrl.quality,
-                    ),
-                ],
-                onChanged: (value) {},
-                value: video.downloadUrls[0].quality,
-              ),
+              // DropdownButton<String>(
+              //   items: [
+              //     for (final downloadUrl in video.downloadUrls)
+              //       DropdownMenuItem(
+              //         child: Text(downloadUrl.quality),
+              //         value: downloadUrl.quality,
+              //       ),
+              //   ],
+              //   onChanged: (value) {},
+              //   value: video.downloadUrls[0].quality,
+              // ),
               const SizedBox(
                 width: 30,
               ),
