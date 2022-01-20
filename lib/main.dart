@@ -7,6 +7,9 @@ void main() {
   runApp(const MyApp());
 }
 
+const appName = 'Youtube Downloader';
+const appDescription = 'Download YouTube videos & audios for free';
+
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -15,16 +18,70 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Youtube Downloader',
       home: Scaffold(
+        drawer: const AppDrawer(appName: appName),
         appBar: AppBar(
-          title: const Text('Youtube Downloader'),
+          title: const Text(appName),
         ),
         body: Align(
           alignment: Alignment.topCenter,
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 1000),
+            constraints: const BoxConstraints(maxWidth: 800),
             child: const HomePage(),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class AppIcon extends StatelessWidget {
+  const AppIcon({Key? key, required this.size}) : super(key: key);
+
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    return Icon(
+      Icons.downloading,
+      size: size,
+    );
+  }
+}
+
+class AppDrawer extends StatelessWidget {
+  const AppDrawer({Key? key, required this.appName}) : super(key: key);
+
+  final String appName;
+
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      child: ListView(
+        children: [
+          DrawerHeader(
+            decoration: const BoxDecoration(
+              color: Colors.blue,
+            ),
+            child: Text(
+              appName,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+              ),
+            ),
+          ),
+          AboutListTile(
+            icon: const Icon(Icons.info),
+            applicationIcon: const AppIcon(size: 50),
+            applicationName: appName,
+            applicationVersion: '1.0.0',
+            applicationLegalese: '\u{a9} 2022 Aparna Panda',
+            aboutBoxChildren: const [
+              SizedBox(height: 24),
+              Text(appDescription),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -53,13 +110,9 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            const AppIcon(size: 100),
             Text(
-              'YouTube Downloader',
-              style: Theme.of(context).textTheme.headline3,
-              textAlign: TextAlign.center,
-            ),
-            Text(
-              'Download YouTube videos & audios for free',
+              appDescription,
               style: Theme.of(context).textTheme.headline5,
               textAlign: TextAlign.center,
             ),
@@ -68,7 +121,7 @@ class _HomePageState extends State<HomePage> {
               style: Theme.of(context).textTheme.bodyText1,
               textAlign: TextAlign.center,
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             Form(
@@ -95,6 +148,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   IconButton(
+                    iconSize: 30,
                     onPressed: () => submitForm(urlController.text),
                     icon: const Icon(Icons.search),
                   ),
@@ -190,7 +244,7 @@ class AdaptiveResultPane extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        return constraints.maxWidth < 700
+        return constraints.maxWidth < 600
             ? Column(
                 children: [
                   Thumbnail(thumbnailData: video.thumbnailData),
