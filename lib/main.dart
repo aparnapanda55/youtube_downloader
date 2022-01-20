@@ -18,7 +18,8 @@ class MyApp extends StatelessWidget {
         appBar: AppBar(
           title: const Text('Youtube Downloader'),
         ),
-        body: Center(
+        body: Align(
+          alignment: Alignment.topCenter,
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 1000),
             child: const HomePage(),
@@ -41,8 +42,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final formKey = GlobalKey<FormState>();
 
-  final urlController = TextEditingController()
-    ..text = 'https://www.youtube.com/watch?v=Hd3z2lH6BBM';
+  final urlController = TextEditingController();
   String? videoId;
 
   @override
@@ -51,8 +51,26 @@ class _HomePageState extends State<HomePage> {
       margin: const EdgeInsets.all(40),
       child: SingleChildScrollView(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            Text(
+              'YouTube Downloader',
+              style: Theme.of(context).textTheme.headline3,
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              'Download YouTube videos & audios for free',
+              style: Theme.of(context).textTheme.headline5,
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              'Paste the link in format: https://www.youtube.com/watch?v=videoId',
+              style: Theme.of(context).textTheme.bodyText1,
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(
+              height: 20,
+            ),
             Form(
               key: formKey,
               child: Row(
@@ -71,11 +89,6 @@ class _HomePageState extends State<HomePage> {
                     onPressed: () => submitForm(urlController.text),
                     icon: const Icon(Icons.search),
                   ),
-                  const Tooltip(
-                    child: Icon(Icons.info_outline),
-                    message:
-                        'URL Formats\nhttps://www.youtube.com/watch?v=videoId\nhttps://youtu.be/videoId',
-                  ),
                 ],
               ),
             ),
@@ -88,11 +101,17 @@ class _HomePageState extends State<HomePage> {
                 builder: (context, snapshot) {
                   if (snapshot.connectionState != ConnectionState.done) {
                     return const CircularProgressIndicator();
-                  } else {
-                    return (snapshot.hasError)
-                        ? Text((snapshot.error as MediaException).code)
-                        : ResultPane(video: snapshot.data!);
                   }
+                  if (snapshot.hasData) {
+                    return ResultPane(video: snapshot.data!);
+                  }
+                  final error = snapshot.error as MediaException;
+                  if (error.code == 'not-found') {
+                    return const Text(
+                        'The requested video does not exist. Please check in YouTube and try again.');
+                  }
+                  return const Text(
+                      'Some internal error occured. Please try again later.');
                 },
               )
           ],
