@@ -210,17 +210,17 @@ class DownloadDetails extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              // DropdownButton<String>(
-              //   items: [
-              //     for (final downloadUrl in video.downloadUrls)
-              //       DropdownMenuItem(
-              //         child: Text(downloadUrl.quality),
-              //         value: downloadUrl.quality,
-              //       ),
-              //   ],
-              //   onChanged: (value) {},
-              //   value: video.downloadUrls[0].quality,
-              // ),
+              DropdownButton<String>(
+                items: [
+                  for (final downloadUrl in video.downloadUrls)
+                    DropdownMenuItem(
+                      child: Text(downloadUrl.quality),
+                      value: downloadUrl.url,
+                    ),
+                ],
+                onChanged: (value) {},
+                value: video.downloadUrls[0].url,
+              ),
               const SizedBox(
                 width: 30,
               ),
@@ -247,7 +247,7 @@ class Thumbnail extends StatelessWidget {
       width: 336,
       padding: const EdgeInsets.all(20),
       child: Image(
-        image: NetworkImage(thumbnailUrl),
+        image: NetworkImage('https://i.ytimg.com/vi/Hd3z2lH6BBM/0.jpg'),
       ),
     );
   }

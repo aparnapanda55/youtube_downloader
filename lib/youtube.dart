@@ -42,9 +42,9 @@ class Video {
       ...data['streamingData']['adaptiveFormats'],
     ]
         .map((e) => DownloadUrl(
-              quality: 'quality',
-              size: 'size',
-              url: 'url',
+              quality: e['qualityLabel'] ?? '',
+              size: '50 MB',
+              url: e['url'] ?? '',
             ))
         .toList();
   }
