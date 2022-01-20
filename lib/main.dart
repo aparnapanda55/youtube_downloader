@@ -78,8 +78,17 @@ class _HomePageState extends State<HomePage> {
                   Expanded(
                     child: TextFormField(
                       controller: urlController,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         labelText: 'Paste YouTube link',
+                        suffix: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              videoId = null;
+                              urlController.clear();
+                            });
+                          },
+                          icon: const Icon(Icons.clear),
+                        ),
                       ),
                       onFieldSubmitted: submitForm,
                       validator: validate,
