@@ -1,5 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:youtube_downloader/youtube.dart';
+import 'package:youtube_downloader/youtube_downloader.dart';
 
 void main() {
   runApp(const MyApp());
@@ -39,7 +41,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final formKey = GlobalKey<FormState>();
 
-  final urlController = TextEditingController();
+  final urlController = TextEditingController()
+    ..text = 'https://www.youtube.com/watch?v=Hd3z2lH6BBM';
   String? videoId;
 
   @override
@@ -80,14 +83,14 @@ class _HomePageState extends State<HomePage> {
               height: 50,
             ),
             if (videoId != null)
-              FutureBuilder<Video>(
-                future: getVideo(videoId!),
+              FutureBuilder<Media>(
+                future: getData(videoId!),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState != ConnectionState.done) {
                     return const CircularProgressIndicator();
                   } else {
                     return (snapshot.hasError)
-                        ? Text('$snapshot.error')
+                        ? Text((snapshot.error as MediaException).code)
                         : ResultPane(video: snapshot.data!);
                   }
                 },
@@ -129,7 +132,7 @@ class ResultPane extends StatelessWidget {
     required this.video,
   }) : super(key: key);
 
-  final Video video;
+  final Media video;
 
   @override
   Widget build(BuildContext context) {
@@ -153,7 +156,7 @@ class AdaptiveResultPane extends StatelessWidget {
     Key? key,
     required this.video,
   }) : super(key: key);
-  final Video video;
+  final Media video;
 
   @override
   Widget build(BuildContext context) {
@@ -162,15 +165,33 @@ class AdaptiveResultPane extends StatelessWidget {
         return constraints.maxWidth < 700
             ? Column(
                 children: [
-                  Thumbnail(thumbnailUrl: video.thumbnailUrl),
-                  DownloadDetails(video: video),
+                  Thumbnail(thumbnailData: video.thumbnailData),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: DownloadDetails(
+                      video: video,
+                      vertical: true,
+                    ),
+                  ),
                 ],
               )
             : Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Thumbnail(thumbnailUrl: video.thumbnailUrl),
-                  DownloadDetails(video: video),
+                  Expanded(
+                    flex: 4,
+                    child: Thumbnail(thumbnailData: video.thumbnailData),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                    flex: 5,
+                    child: DownloadDetails(
+                      video: video,
+                      vertical: false,
+                    ),
+                  ),
                 ],
               );
       },
@@ -181,74 +202,104 @@ class AdaptiveResultPane extends StatelessWidget {
 class DownloadDetails extends StatelessWidget {
   const DownloadDetails({
     Key? key,
+    required this.vertical,
     required this.video,
   }) : super(key: key);
-  final Video video;
+  final Media video;
+  final bool vertical;
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            video.title,
-            style: const TextStyle(fontWeight: FontWeight.w600),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Text(video.author),
-          const SizedBox(
-            height: 10,
-          ),
-          Text(video.duration),
-          const SizedBox(
-            height: 10,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              DropdownButton<String>(
-                items: [
-                  for (final downloadUrl in video.downloadUrls)
-                    DropdownMenuItem(
-                      child: Text(downloadUrl.quality),
-                      value: downloadUrl.url,
-                    ),
-                ],
-                onChanged: (value) {},
-                value: video.downloadUrls[0].url,
-              ),
-              const SizedBox(
-                width: 30,
-              ),
-              ElevatedButton(
-                onPressed: () {},
-                child: const Text('Download'),
-              ),
+    return Column(
+      crossAxisAlignment:
+          vertical ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+      children: [
+        Text(
+          video.title,
+          style: const TextStyle(fontWeight: FontWeight.w600),
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        Text(video.author),
+        const SizedBox(
+          height: 10,
+        ),
+        Text(video.duration),
+        const SizedBox(
+          height: 10,
+        ),
+        DownloadMenu(
+          items: video.videos,
+          label: 'Video',
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        DownloadMenu(
+          items: video.audios,
+          label: 'Audio',
+        )
+      ],
+    );
+  }
+}
+
+class DownloadMenu<T extends UrlItem> extends StatelessWidget {
+  const DownloadMenu({
+    Key? key,
+    required this.items,
+    required this.label,
+  }) : super(key: key);
+
+  final List<T> items;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Expanded(
+          child: DropdownButtonFormField<String>(
+            isExpanded: true,
+            decoration: InputDecoration(
+              labelText: label,
+              filled: true,
+            ),
+            items: [
+              for (final item in items)
+                DropdownMenuItem(
+                  child: Text('$item'),
+                  value: item.url,
+                ),
             ],
-          )
-        ],
-      ),
+            onChanged: (value) {},
+            value: items[0].url,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: IconButton(
+            iconSize: 30,
+            onPressed: () {},
+            icon: const Icon(Icons.download),
+          ),
+        ),
+      ],
     );
   }
 }
 
 class Thumbnail extends StatelessWidget {
-  const Thumbnail({Key? key, required this.thumbnailUrl}) : super(key: key);
+  const Thumbnail({Key? key, required this.thumbnailData}) : super(key: key);
 
-  final String thumbnailUrl;
+  final String thumbnailData;
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 188,
-      width: 336,
-      padding: const EdgeInsets.all(20),
-      child: Image(
-        image: NetworkImage('https://i.ytimg.com/vi/Hd3z2lH6BBM/0.jpg'),
-      ),
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Image.memory(const Base64Decoder().convert(thumbnailData)),
     );
   }
 }
