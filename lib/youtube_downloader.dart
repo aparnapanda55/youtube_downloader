@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:html';
 
 import 'package:http/http.dart' as http;
 
@@ -39,10 +40,15 @@ class Media {
   }
 }
 
-class Video {
+abstract class UrlItem {
+  final String url = '';
+}
+
+class Video implements UrlItem {
   final String format;
   final String quality;
   final String size;
+  @override
   final String url;
 
   Video({
@@ -67,11 +73,12 @@ class Video {
   }
 }
 
-class Audio {
+class Audio implements UrlItem {
   final String format;
   final String codecs;
   final String bitrate;
   final String size;
+  @override
   final String url;
 
   Audio({

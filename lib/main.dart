@@ -228,72 +228,64 @@ class DownloadDetails extends StatelessWidget {
         const SizedBox(
           height: 10,
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Expanded(
-              child: DropdownButtonFormField<String>(
-                decoration: const InputDecoration(
-                  labelText: 'Video',
-                  filled: true,
-                ),
-                items: [
-                  for (final v in video.videos)
-                    DropdownMenuItem(
-                      child: Text('$v'),
-                      value: v.url,
-                    ),
-                ],
-                onChanged: (value) {},
-                value: video.videos[0].url,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: IconButton(
-                iconSize: 30,
-                onPressed: () {},
-                icon: const Icon(Icons.download),
-              ),
-            ),
-          ],
+        DownloadMenu(
+          items: video.videos,
+          label: 'Video',
         ),
         const SizedBox(
           height: 10,
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Expanded(
-              child: DropdownButtonFormField<String>(
-                isExpanded: true,
-                decoration: const InputDecoration(
-                  labelText: 'Audio',
-                  filled: true,
-                ),
-                items: [
-                  for (final a in video.audios)
-                    DropdownMenuItem(
-                      child: Text('$a'),
-                      value: a.url,
-                    ),
-                ],
-                onChanged: (value) {},
-                value: video.audios[0].url,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: IconButton(
-                iconSize: 30,
-                onPressed: () {},
-                icon: const Icon(Icons.download),
-              ),
-            ),
-          ],
+        DownloadMenu(
+          items: video.audios,
+          label: 'Audio',
         )
+      ],
+    );
+  }
+}
+
+class DownloadMenu<T extends UrlItem> extends StatelessWidget {
+  const DownloadMenu({
+    Key? key,
+    required this.items,
+    required this.label,
+  }) : super(key: key);
+
+  final List<T> items;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Expanded(
+          child: DropdownButtonFormField<String>(
+            isExpanded: true,
+            decoration: InputDecoration(
+              labelText: label,
+              filled: true,
+            ),
+            items: [
+              for (final item in items)
+                DropdownMenuItem(
+                  child: Text('$item'),
+                  value: item.url,
+                ),
+            ],
+            onChanged: (value) {},
+            value: items[0].url,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: IconButton(
+            iconSize: 30,
+            onPressed: () {},
+            icon: const Icon(Icons.download),
+          ),
+        ),
       ],
     );
   }
