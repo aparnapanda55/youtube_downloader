@@ -166,7 +166,13 @@ class AdaptiveResultPane extends StatelessWidget {
             ? Column(
                 children: [
                   Thumbnail(thumbnailData: video.thumbnailData),
-                  DownloadDetails(video: video),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: DownloadDetails(
+                      video: video,
+                      vertical: true,
+                    ),
+                  ),
                 ],
               )
             : Row(
@@ -177,11 +183,14 @@ class AdaptiveResultPane extends StatelessWidget {
                     child: Thumbnail(thumbnailData: video.thumbnailData),
                   ),
                   SizedBox(
-                    width: 30,
+                    width: 10,
                   ),
                   Expanded(
                     flex: 5,
-                    child: DownloadDetails(video: video),
+                    child: DownloadDetails(
+                      video: video,
+                      vertical: false,
+                    ),
                   ),
                 ],
               );
@@ -193,13 +202,16 @@ class AdaptiveResultPane extends StatelessWidget {
 class DownloadDetails extends StatelessWidget {
   const DownloadDetails({
     Key? key,
+    required this.vertical,
     required this.video,
   }) : super(key: key);
   final Media video;
+  final bool vertical;
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment:
+          vertical ? CrossAxisAlignment.center : CrossAxisAlignment.start,
       children: [
         Text(
           video.title,
@@ -220,23 +232,65 @@ class DownloadDetails extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            DropdownButton<String>(
-              items: [
-                for (final v in video.videos)
-                  DropdownMenuItem(
-                    child: Text(v.quality),
-                    value: v.url,
-                  ),
-              ],
-              onChanged: (value) {},
-              value: video.videos[0].url,
+            Expanded(
+              child: DropdownButtonFormField<String>(
+                decoration: const InputDecoration(
+                  labelText: 'Video',
+                  filled: true,
+                ),
+                items: [
+                  for (final v in video.videos)
+                    DropdownMenuItem(
+                      child: Text('$v'),
+                      value: v.url,
+                    ),
+                ],
+                onChanged: (value) {},
+                value: video.videos[0].url,
+              ),
             ),
-            const SizedBox(
-              width: 30,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: IconButton(
+                iconSize: 30,
+                onPressed: () {},
+                icon: const Icon(Icons.download),
+              ),
             ),
-            ElevatedButton(
-              onPressed: () {},
-              child: const Text('Download'),
+          ],
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Expanded(
+              child: DropdownButtonFormField<String>(
+                isExpanded: true,
+                decoration: const InputDecoration(
+                  labelText: 'Audio',
+                  filled: true,
+                ),
+                items: [
+                  for (final a in video.audios)
+                    DropdownMenuItem(
+                      child: Text('$a'),
+                      value: a.url,
+                    ),
+                ],
+                onChanged: (value) {},
+                value: video.audios[0].url,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: IconButton(
+                iconSize: 30,
+                onPressed: () {},
+                icon: const Icon(Icons.download),
+              ),
             ),
           ],
         )
