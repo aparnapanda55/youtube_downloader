@@ -119,11 +119,6 @@ class _HomePageState extends State<HomePage> {
               style: Theme.of(context).textTheme.headline5,
               textAlign: TextAlign.center,
             ),
-            Text(
-              'Paste the link in format: https://www.youtube.com/watch?v=videoId',
-              style: Theme.of(context).textTheme.bodyText1,
-              textAlign: TextAlign.center,
-            ),
             const SizedBox(
               height: 20,
             ),
