@@ -330,7 +330,10 @@ class DownloadDetails extends StatelessWidget {
         const SizedBox(height: 10),
         Text(
           'If the browser starts to play the media instead of downloading, you can save it with ctrl+s, cmd+s or phones Save As button.',
-          style: Theme.of(context).textTheme.caption,
+          style: Theme.of(context)
+              .textTheme
+              .caption
+              ?.copyWith(fontStyle: FontStyle.italic),
         ),
       ],
     );
