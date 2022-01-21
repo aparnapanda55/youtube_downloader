@@ -101,7 +101,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final formKey = GlobalKey<FormState>();
 
-  final urlController = TextEditingController();
+  final urlController = TextEditingController()
+    ..text = 'https://youtu.be/nhJkwikbZ6A';
   String? videoId;
 
   @override
@@ -198,6 +199,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   String parseVideoId(String url) {
+    final uri = Uri.parse(url);
+    if (uri.host == 'youtu.be') {
+      return uri.path.replaceAll('/', '');
+    }
     return (Uri.parse(url).queryParameters['v'] ?? '').trim();
   }
 
