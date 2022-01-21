@@ -41,9 +41,11 @@ class Media {
 
 abstract class UrlItem {
   final String url = '';
+  final String format = '';
 }
 
 class Video implements UrlItem {
+  @override
   final String format;
   final String quality;
   final String size;
@@ -73,6 +75,7 @@ class Video implements UrlItem {
 }
 
 class Audio implements UrlItem {
+  @override
   final String format;
   final String codecs;
   final String bitrate;

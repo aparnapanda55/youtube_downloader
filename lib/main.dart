@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:html';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:youtube_downloader/youtube_downloader.dart';
 
 void main() {
@@ -190,7 +192,6 @@ class _HomePageState extends State<HomePage> {
     final state = formKey.currentState;
     if (state == null || !state.validate()) return;
     final v = parseVideoId(url);
-    print('fetching details for $v');
     setState(() {
       videoId = v;
     });
@@ -264,14 +265,17 @@ class AdaptiveResultPane extends StatelessWidget {
                     flex: 4,
                     child: Thumbnail(thumbnailData: video.thumbnailData),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 10,
                   ),
                   Expanded(
                     flex: 5,
-                    child: DownloadDetails(
-                      video: video,
-                      vertical: false,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: DownloadDetails(
+                        video: video,
+                        vertical: false,
+                      ),
                     ),
                   ),
                 ],
@@ -311,6 +315,7 @@ class DownloadDetails extends StatelessWidget {
           height: 10,
         ),
         DownloadMenu(
+          title: video.title,
           items: video.videos,
           label: 'Video',
         ),
@@ -318,23 +323,44 @@ class DownloadDetails extends StatelessWidget {
           height: 10,
         ),
         DownloadMenu(
+          title: video.title,
           items: video.audios,
           label: 'Audio',
-        )
+        ),
+        const SizedBox(height: 10),
+        Text(
+          'If the browser starts to play the media instead of downloading, you can save it with ctrl+s, cmd+s or phones Save As button.',
+          style: Theme.of(context).textTheme.caption,
+        ),
       ],
     );
   }
 }
 
-class DownloadMenu<T extends UrlItem> extends StatelessWidget {
+class DownloadMenu<T extends UrlItem> extends StatefulWidget {
   const DownloadMenu({
     Key? key,
+    required this.title,
     required this.items,
     required this.label,
   }) : super(key: key);
 
+  final String title;
   final List<T> items;
   final String label;
+
+  @override
+  State<DownloadMenu> createState() => _DownloadMenuState();
+}
+
+class _DownloadMenuState<T extends UrlItem> extends State<DownloadMenu<T>> {
+  late T selectedItem;
+
+  @override
+  void initState() {
+    selectedItem = widget.items[0];
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -343,30 +369,49 @@ class DownloadMenu<T extends UrlItem> extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Expanded(
-          child: DropdownButtonFormField<String>(
+          child: DropdownButtonFormField<T>(
             isExpanded: true,
             decoration: InputDecoration(
-              labelText: label,
+              labelText: widget.label,
               filled: true,
             ),
             items: [
-              for (final item in items)
+              for (final item in widget.items)
                 DropdownMenuItem(
                   child: Text('$item'),
-                  value: item.url,
+                  value: item,
                 ),
             ],
-            onChanged: (value) {},
-            value: items[0].url,
+            onChanged: (value) {
+              setState(() {
+                selectedItem = value!;
+              });
+            },
+            value: selectedItem,
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: IconButton(
-            iconSize: 30,
-            onPressed: () {},
-            icon: const Icon(Icons.download),
-          ),
+        IconButton(
+          iconSize: 30,
+          onPressed: () {
+            Clipboard.setData(ClipboardData(text: selectedItem.url));
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                    'Download link for $selectedItem copied to clipboard!'),
+              ),
+            );
+          },
+          icon: const Icon(Icons.copy),
+        ),
+        IconButton(
+          iconSize: 30,
+          onPressed: () {
+            final fileName = '${widget.title}.${selectedItem.format}';
+            final a = AnchorElement(href: selectedItem.url);
+            a.download = fileName;
+            a.click();
+          },
+          icon: const Icon(Icons.download),
         ),
       ],
     );
@@ -380,7 +425,7 @@ class Thumbnail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.only(left: 16.0),
       child: Image.memory(const Base64Decoder().convert(thumbnailData)),
     );
   }
