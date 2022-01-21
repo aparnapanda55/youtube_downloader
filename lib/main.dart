@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:youtube_downloader/youtube_downloader.dart';
 
 void main() {
@@ -326,7 +327,7 @@ class DownloadDetails extends StatelessWidget {
   }
 }
 
-class DownloadMenu<T extends UrlItem> extends StatelessWidget {
+class DownloadMenu<T extends UrlItem> extends StatefulWidget {
   const DownloadMenu({
     Key? key,
     required this.items,
@@ -337,36 +338,63 @@ class DownloadMenu<T extends UrlItem> extends StatelessWidget {
   final String label;
 
   @override
+  State<DownloadMenu> createState() => _DownloadMenuState();
+}
+
+class _DownloadMenuState<T extends UrlItem> extends State<DownloadMenu<T>> {
+  late T selectedItem;
+
+  @override
+  void initState() {
+    selectedItem = widget.items[0];
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: [
         Expanded(
-          child: DropdownButtonFormField<String>(
+          child: DropdownButtonFormField<T>(
             isExpanded: true,
             decoration: InputDecoration(
-              labelText: label,
+              labelText: widget.label,
               filled: true,
             ),
             items: [
-              for (final item in items)
+              for (final item in widget.items)
                 DropdownMenuItem(
                   child: Text('$item'),
-                  value: item.url,
+                  value: item,
                 ),
             ],
-            onChanged: (value) {},
-            value: items[0].url,
+            onChanged: (value) {
+              setState(() {
+                selectedItem = value!;
+              });
+            },
+            value: selectedItem,
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: IconButton(
-            iconSize: 30,
-            onPressed: () {},
-            icon: const Icon(Icons.download),
-          ),
+        IconButton(
+          iconSize: 30,
+          onPressed: () {
+            Clipboard.setData(ClipboardData(text: selectedItem.url));
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                    'Download link for $selectedItem copied to clipboard!'),
+              ),
+            );
+          },
+          icon: const Icon(Icons.copy),
+        ),
+        IconButton(
+          iconSize: 30,
+          onPressed: () {},
+          icon: const Icon(Icons.download),
         ),
       ],
     );
